@@ -42,7 +42,7 @@ public class DeleteBootcampCommand : IRequest<DeletedBootcampResponse>, ISecured
             Bootcamp? bootcamp = await _bootcampRepository.GetAsync(predicate: b => b.Id == request.Id, cancellationToken: cancellationToken);
             await _bootcampBusinessRules.BootcampShouldExistWhenSelected(bootcamp);
 
-            await _bootcampRepository.DeleteAsync(bootcamp!);
+            await _bootcampRepository.DeleteAsync(bootcamp!,true);
 
             DeletedBootcampResponse response = _mapper.Map<DeletedBootcampResponse>(bootcamp);
             return response;
