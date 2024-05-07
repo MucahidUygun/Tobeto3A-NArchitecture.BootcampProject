@@ -2,6 +2,7 @@ using NArchitecture.Core.Persistence.Paging;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Http;
 
 namespace Application.Services.BootcampImages;
 
@@ -24,7 +25,7 @@ public interface IBootcampImageService
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     );
-    Task<BootcampImage> AddAsync(BootcampImage bootcampImage);
-    Task<BootcampImage> UpdateAsync(BootcampImage bootcampImage);
+    Task<BootcampImage> AddAsync(BootcampImage bootcampImage,IFormFile formFile);
+    Task<BootcampImage> UpdateAsync(BootcampImage bootcampImage,IFormFile formFile);
     Task<BootcampImage> DeleteAsync(BootcampImage bootcampImage, bool permanent = false);
 }
