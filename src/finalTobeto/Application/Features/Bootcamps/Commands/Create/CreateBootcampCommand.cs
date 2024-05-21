@@ -17,6 +17,7 @@ public class CreateBootcampCommand : IRequest<CreatedBootcampResponse>, ISecured
     public string Name { get; set; }
     public Guid InstructorId { get; set; }
     public int BootcampStateId { get; set; }
+    public string Description { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
 

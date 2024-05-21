@@ -9,6 +9,7 @@ public class Bootcamp : Entity<int>
     public int BootcampStateId { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
+    public string Description { get; set; }
     public virtual Instructor? Instructor { get; set; }
     public virtual BootcampState? BootcampState { get; set; }
     public virtual ICollection<BootcampImage> BootcampImages { get; set; }
@@ -20,7 +21,7 @@ public class Bootcamp : Entity<int>
         BootcampImages = new HashSet<BootcampImage>();
     }
 
-    public Bootcamp(int id, Guid instructorId, int bootcampStateId, string name, DateTime startDate, DateTime endDate)
+    public Bootcamp(int id, Guid instructorId, int bootcampStateId, string name, DateTime startDate, DateTime endDate, string description)
         : this()
     {
         Id = id;
@@ -29,6 +30,7 @@ public class Bootcamp : Entity<int>
         Name = name;
         StartDate = startDate;
         EndDate = endDate;
+        Description = description;
     }
 
     public Bootcamp(int id, string name, Guid instructorId, int bootcampStateId, DateTime startDate, DateTime endDate)
