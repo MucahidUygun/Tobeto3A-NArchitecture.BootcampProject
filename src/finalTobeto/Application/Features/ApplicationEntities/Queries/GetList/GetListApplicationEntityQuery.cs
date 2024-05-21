@@ -9,6 +9,7 @@ using NArchitecture.Core.Application.Responses;
 using NArchitecture.Core.Persistence.Paging;
 using MediatR;
 using static Application.Features.ApplicationEntities.Constants.ApplicationEntitiesOperationClaims;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.ApplicationEntities.Queries.GetList;
 
@@ -38,7 +39,8 @@ public class GetListApplicationEntityQuery : IRequest<GetListResponse<GetListApp
         {
             IPaginate<ApplicationEntity> applicationEntities = await _applicationEntityRepository.GetListAsync(
                 index: request.PageRequest.PageIndex,
-                size: request.PageRequest.PageSize, 
+                size: request.PageRequest.PageSize,
+                include: x=>x.Include(x=>x.Applicant).Include(x=>x.ApplicationState).Include(x=>x.Bootcamp),
                 cancellationToken: cancellationToken
             );
 

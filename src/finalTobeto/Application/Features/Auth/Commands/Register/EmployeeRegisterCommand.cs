@@ -30,13 +30,16 @@ public class EmployeeRegisterCommand : IRequest<RegisteredResponse>
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IAuthService _authService;
         private readonly AuthBusinessRules _authBusinessRules;
+        private readonly IUserOperationClaimRepository _userOperationClaimRepository;
 
         public RegisterCommandHandler(
+            IUserOperationClaimRepository userOperationClaimRepository,
             IEmployeeRepository employeeRepository,
             IAuthService authService,
             AuthBusinessRules authBusinessRules
         )
         {
+            _userOperationClaimRepository = userOperationClaimRepository;
             _employeeRepository = employeeRepository;
             _authService = authService;
             _authBusinessRules = authBusinessRules;
@@ -65,6 +68,16 @@ public class EmployeeRegisterCommand : IRequest<RegisteredResponse>
                     PasswordSalt = passwordSalt,
                 };
             Employee createdEmployee = await _employeeRepository.AddAsync(newEmployee);
+
+            UserOperationClaim[] userCliams = 
+            {
+                new() { UserId = createdEmployee.Id, OperationClaimId = 1 },
+            };
+
+            foreach (var claim in userCliams)
+            {
+                await _userOperationClaimRepository.AddAsync(claim);
+            }
 
             AccessToken createdAccessToken = await _authService.CreateAccessToken(createdEmployee);
 

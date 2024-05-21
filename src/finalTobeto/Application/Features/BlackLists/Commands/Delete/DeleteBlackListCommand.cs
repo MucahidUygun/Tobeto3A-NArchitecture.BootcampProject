@@ -42,7 +42,7 @@ public class DeleteBlackListCommand : IRequest<DeletedBlackListResponse>, ISecur
             BlackList? blackList = await _blackListRepository.GetAsync(predicate: bl => bl.Id == request.Id, cancellationToken: cancellationToken);
             await _blackListBusinessRules.BlackListShouldExistWhenSelected(blackList);
 
-            await _blackListRepository.DeleteAsync(blackList!);
+            await _blackListRepository.DeleteAsync(blackList!, true);
 
             DeletedBlackListResponse response = _mapper.Map<DeletedBlackListResponse>(blackList);
             return response;

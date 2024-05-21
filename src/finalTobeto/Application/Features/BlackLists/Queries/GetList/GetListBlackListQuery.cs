@@ -9,6 +9,7 @@ using NArchitecture.Core.Application.Responses;
 using NArchitecture.Core.Persistence.Paging;
 using MediatR;
 using static Application.Features.BlackLists.Constants.BlackListsOperationClaims;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.BlackLists.Queries.GetList;
 
@@ -39,6 +40,7 @@ public class GetListBlackListQuery : IRequest<GetListResponse<GetListBlackListLi
             IPaginate<BlackList> blackLists = await _blackListRepository.GetListAsync(
                 index: request.PageRequest.PageIndex,
                 size: request.PageRequest.PageSize, 
+                include:x=>x.Include(p=>p.Applicant),
                 cancellationToken: cancellationToken
             );
 

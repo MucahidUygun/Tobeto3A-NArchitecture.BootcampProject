@@ -42,7 +42,7 @@ public class DeleteApplicationEntityCommand : IRequest<DeletedApplicationEntityR
             ApplicationEntity? applicationEntity = await _applicationEntityRepository.GetAsync(predicate: ae => ae.Id == request.Id, cancellationToken: cancellationToken);
             await _applicationEntityBusinessRules.ApplicationEntityShouldExistWhenSelected(applicationEntity);
 
-            await _applicationEntityRepository.DeleteAsync(applicationEntity!);
+            await _applicationEntityRepository.DeleteAsync(applicationEntity!,true);
 
             DeletedApplicationEntityResponse response = _mapper.Map<DeletedApplicationEntityResponse>(applicationEntity);
             return response;

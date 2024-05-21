@@ -34,13 +34,16 @@ public class ApplicantRegisterCommand : IRequest<RegisteredResponse>
         private readonly IApplicantRepository _applicantRepository;
         private readonly IAuthService _authService;
         private readonly AuthBusinessRules _authBusinessRules;
+        private readonly IUserOperationClaimRepository _userOperationClaimRepository;
 
         public RegisterCommandHandler(
+            IUserOperationClaimRepository userOperationClaimRepository,
             IApplicantRepository applicantRepository,
             IAuthService authService,
             AuthBusinessRules authBusinessRules
         )
         {
+            _userOperationClaimRepository = userOperationClaimRepository;
             _applicantRepository = applicantRepository;
             _authService = authService;
             _authBusinessRules = authBusinessRules;
@@ -68,7 +71,19 @@ public class ApplicantRegisterCommand : IRequest<RegisteredResponse>
                     PasswordHash = passwordHash,
                     PasswordSalt = passwordSalt,
                 };
+
             Applicant createdApplicant = await _applicantRepository.AddAsync(newApplicant);
+
+            UserOperationClaim[] userCliams =
+            {
+                new() { UserId = newApplicant.Id, OperationClaimId = 31 },
+                new() { UserId = newApplicant.Id, OperationClaimId = 33 },
+            };
+
+            foreach (var claim in userCliams)
+            {
+                await _userOperationClaimRepository.AddAsync(claim);
+            }
 
             AccessToken createdAccessToken = await _authService.CreateAccessToken(createdApplicant);
 

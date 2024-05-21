@@ -8,6 +8,7 @@ public class GetListBootcampListItemDto : IDto
     public string Name { get; set; }
     public string InstructorFirstName { get; set; }
     public string InstructorLastName { get; set; }
+    public string InstructorId { get; set; }
     public string BootcampStateName { get; set; }
     public string ImagePath { get; set; }
     public DateTime StartDate { get; set; }
