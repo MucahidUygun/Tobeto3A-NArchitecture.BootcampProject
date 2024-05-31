@@ -69,6 +69,11 @@ public class EnableEmailAuthenticatorCommand : IRequest, ISecuredRequest
             EmailAuthenticator addedEmailAuthenticator = await _emailAuthenticatorRepository.AddAsync(emailAuthenticator);
 
             var toEmailList = new List<MailboxAddress> { new(name: user.Email, user.Email) };
+            string verifyLink = $"{request.VerifyEmailUrlPrefix}?ActivationKey={HttpUtility.UrlEncode(addedEmailAuthenticator.ActivationKey)}";
+            string htmlFilePath = Path.Combine("wwwroot", "emails", "EmailVerify.html");
+            string htmlContent = File.ReadAllText(htmlFilePath);
+
+            htmlContent = htmlContent.Replace("{{VerifyLink}}", verifyLink);
 
             _mailService.SendMail(
                 new Mail
@@ -76,7 +81,8 @@ public class EnableEmailAuthenticatorCommand : IRequest, ISecuredRequest
                     ToList = toEmailList,
                     Subject = "Verify Your Email - NArchitecture",
                     TextBody =
-                        $"Click on the link to verify your email: {request.VerifyEmailUrlPrefix}?ActivationKey={HttpUtility.UrlEncode(addedEmailAuthenticator.ActivationKey)}"
+                        $"Click on the link to verify your email: {request.VerifyEmailUrlPrefix}?ActivationKey={HttpUtility.UrlEncode(addedEmailAuthenticator.ActivationKey)}",
+                    HtmlBody = htmlContent
                 }
             );
         }

@@ -1,8 +1,10 @@
 ﻿using Application.Features.Auth.Commands.EnableEmailAuthenticator;
 using Application.Features.Auth.Commands.EnableOtpAuthenticator;
+using Application.Features.Auth.Commands.ForgotPassword;
 using Application.Features.Auth.Commands.Login;
 using Application.Features.Auth.Commands.RefreshToken;
 using Application.Features.Auth.Commands.Register;
+using Application.Features.Auth.Commands.ResetPassword;
 using Application.Features.Auth.Commands.RevokeToken;
 using Application.Features.Auth.Commands.VerifyEmailAuthenticator;
 using Application.Features.Auth.Commands.VerifyOtpAuthenticator;
@@ -46,6 +48,28 @@ public class AuthController : BaseController
         RegisteredResponse result = await Mediator.Send(registerCommand);
         setRefreshTokenToCookie(result.RefreshToken);
         return Created(uri: "", result.AccessToken);
+    }
+    [HttpPost("ForgotPassword")]
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto forgotPasswordDto)
+    {
+
+        ForgotPasswordCommand forgotPasswordCommand = new() { ForgotPasswordDto = forgotPasswordDto };
+        await Mediator.Send(forgotPasswordCommand);
+        return Ok("mail gönderildi");
+    }
+    [HttpPost("ResetPassword")]
+    public async Task<IActionResult> ResetPassword(ResetPasswordDto resetPasswordDto)
+    {
+
+        ResetPasswordCommand resetPasswordCommand = new()
+        {
+            UserId = getUserIdFromRequest(),
+            ResetPasswordDtos = resetPasswordDto
+        };
+
+        await Mediator.Send(resetPasswordCommand);
+
+        return Ok();
     }
 
     [HttpPost("RegisterInstructor")]

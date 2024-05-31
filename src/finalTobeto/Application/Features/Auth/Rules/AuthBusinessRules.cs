@@ -44,6 +44,24 @@ public class AuthBusinessRules : BaseBusinessRules
             await throwBusinessException(AuthMessages.AlreadyVerifiedOtpAuthenticatorIsExists);
     }
 
+    public async Task PasswordResetRequestBeExists(EmailAuthenticator emailAuthenticator)
+    {
+        if (emailAuthenticator.ResetPasswordToken is false && emailAuthenticator.ResetPasswordTokenExpiry < DateTime.UtcNow)
+        {
+            await throwBusinessException(AuthMessages.PasswordResetRequestExpired);
+        }
+
+    }
+
+    public async Task PasswordShouldNotBeSameAsOld(string newPassword, User user)
+    {
+        bool isSame = HashingHelper.VerifyPasswordHash(newPassword, user.PasswordHash, user.PasswordSalt);
+        if (isSame)
+        {
+            await throwBusinessException("Yeni ?ifre, eski ?ifre ile ayn? olamaz.");
+        }
+    }
+
     public async Task EmailAuthenticatorActivationKeyShouldBeExists(EmailAuthenticator emailAuthenticator)
     {
         if (emailAuthenticator.ActivationKey is null)

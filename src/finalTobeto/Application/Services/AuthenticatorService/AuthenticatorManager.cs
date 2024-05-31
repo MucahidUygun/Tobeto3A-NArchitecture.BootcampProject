@@ -86,18 +86,23 @@ public class AuthenticatorManager : IAuthenticatorService
         if (!emailAuthenticator.IsVerified)
             throw new BusinessException("Email Authenticator must be is verified.");
 
-        string authenticatorCode = await _emailAuthenticatorHelper.CreateEmailActivationCode();
-        emailAuthenticator.ActivationKey = authenticatorCode;
+        string ActivationCode = await _emailAuthenticatorHelper.CreateEmailActivationCode();
+        emailAuthenticator.ActivationKey = ActivationCode;
         await _emailAuthenticatorRepository.UpdateAsync(emailAuthenticator);
 
         var toEmailList = new List<MailboxAddress> { new(name: user.Email, address: user.Email) };
+        string htmlFilePath = Path.Combine("wwwroot", "emails", "EmailCode.html");
+        string htmlContent = File.ReadAllText(htmlFilePath);
+
+        htmlContent = htmlContent.Replace("{{ActivationCode}}", ActivationCode);
 
         _mailService.SendMail(
             new Mail
             {
                 ToList = toEmailList,
                 Subject = "Authenticator Code - NArchitecture",
-                TextBody = $"Enter your authenticator code: {authenticatorCode}"
+                TextBody = $"Enter your authenticator code: {ActivationCode}",
+                HtmlBody = htmlContent
             }
         );
     }

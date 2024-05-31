@@ -12,7 +12,16 @@ public class LoggedResponse : IResponse
 
     public LoggedHttpResponse ToHttpResponse()
     {
-        return new() { AccessToken = AccessToken, RequiredAuthenticatorType = RequiredAuthenticatorType };
+        try
+        {
+            return new() { AccessToken = AccessToken, RequiredAuthenticatorType = RequiredAuthenticatorType };
+        }
+        catch (Exception ex)
+        {
+
+            throw ex;
+        }
+        
     }
 
     public class LoggedHttpResponse
