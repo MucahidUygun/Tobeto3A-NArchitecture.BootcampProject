@@ -42,7 +42,7 @@ public class DeleteBootcampImageCommand : IRequest<DeletedBootcampImageResponse>
             BootcampImage? bootcampImage = await _bootcampImageRepository.GetAsync(predicate: bi => bi.Id == request.Id, cancellationToken: cancellationToken);
             await _bootcampImageBusinessRules.BootcampImageShouldExistWhenSelected(bootcampImage);
 
-            await _bootcampImageRepository.DeleteAsync(bootcampImage!);
+            await _bootcampImageRepository.DeleteAsync(bootcampImage!, true);
 
             DeletedBootcampImageResponse response = _mapper.Map<DeletedBootcampImageResponse>(bootcampImage);
             return response;
