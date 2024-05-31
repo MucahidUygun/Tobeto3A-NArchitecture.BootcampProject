@@ -3,26 +3,24 @@ using Application.Features.UserImages.Rules;
 using Application.Services.Repositories;
 using AutoMapper;
 using Domain.Entities;
+using MediatR;
 using NArchitecture.Core.Application.Pipelines.Authorization;
 using NArchitecture.Core.Application.Pipelines.Caching;
 using NArchitecture.Core.Application.Pipelines.Logging;
 using NArchitecture.Core.Application.Pipelines.Transaction;
-using MediatR;
 using static Application.Features.UserImages.Constants.UserImagesOperationClaims;
 
-namespace Application.Features.UserImages.Commands.Create;
 
+namespace Application.Features.UserImages.Commands.Create;
 public class CreateUserImageCommand : IRequest<CreatedUserImageResponse>, ISecuredRequest, ICacheRemoverRequest, ILoggableRequest, ITransactionalRequest
 {
     public Guid UserId { get; set; }
     public string ImagePath { get; set; }
-
     public string[] Roles => [Admin, Write, UserImagesOperationClaims.Create];
 
     public bool BypassCache { get; }
     public string? CacheKey { get; }
     public string[]? CacheGroupKey => ["GetUserImages"];
-
     public class CreateUserImageCommandHandler : IRequestHandler<CreateUserImageCommand, CreatedUserImageResponse>
     {
         private readonly IMapper _mapper;

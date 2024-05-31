@@ -9,6 +9,7 @@ public class UpdatedUserResponse : IResponse
     public string LastName { get; set; }
     public string Email { get; set; }
     public bool Status { get; set; }
+    public string ImageUrl { get; set; }
 
     public UpdatedUserResponse()
     {
@@ -17,12 +18,14 @@ public class UpdatedUserResponse : IResponse
         Email = string.Empty;
     }
 
-    public UpdatedUserResponse(Guid id, string firstName, string lastName, string email, bool status)
+    public UpdatedUserResponse(Guid id, string firstName, string lastName, string email, bool status, string ýmageUrl)
     {
         Id = id;
         FirstName = firstName;
         LastName = lastName;
         Email = email;
         Status = status;
+        ImageUrl = ýmageUrl;
+
     }
 }

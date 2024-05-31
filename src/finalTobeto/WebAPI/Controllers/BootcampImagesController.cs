@@ -3,9 +3,10 @@ using Application.Features.BootcampImages.Commands.Delete;
 using Application.Features.BootcampImages.Commands.Update;
 using Application.Features.BootcampImages.Queries.GetById;
 using Application.Features.BootcampImages.Queries.GetList;
+using Application.Services.BootcampImages;
+using Microsoft.AspNetCore.Mvc;
 using NArchitecture.Core.Application.Requests;
 using NArchitecture.Core.Application.Responses;
-using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
 
@@ -13,20 +14,27 @@ namespace WebAPI.Controllers;
 [ApiController]
 public class BootcampImagesController : BaseController
 {
-    [HttpPost]
-    public async Task<IActionResult> Add([FromForm] CreateBootcampImageCommand createBootcampImageCommand)
-    {
-        CreatedBootcampImageResponse response = await Mediator.Send(createBootcampImageCommand);
 
-        return Created(uri: "", response);
+    private readonly IBootcampImageService _bootcampImageService;
+
+    public BootcampImagesController(IBootcampImageService bootcampImageService)
+    {
+        _bootcampImageService = bootcampImageService;
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Add(IFormFile formFile, [FromForm] BootcampImageRequest imageRequest)
+    {
+        var result = await _bootcampImageService.Add(formFile, imageRequest);
+        return Ok(result);
     }
 
     [HttpPut]
-    public async Task<IActionResult> Update([FromForm] UpdateBootcampImageCommand updateBootcampImageCommand)
+    public async Task<IActionResult> Update(IFormFile formFile, [FromForm] BootcampImageUpdateRequest imageUpdateRequest)
     {
-        UpdatedBootcampImageResponse response = await Mediator.Send(updateBootcampImageCommand);
+        var result = await _bootcampImageService.Update(formFile, imageUpdateRequest);
 
-        return Ok(response);
+        return Ok(result);
     }
 
     [HttpDelete("{id}")]

@@ -7,6 +7,7 @@ using AutoMapper;
 using NArchitecture.Core.Application.Responses;
 using Domain.Entities;
 using NArchitecture.Core.Persistence.Paging;
+using Application.Services.UserImages;
 
 namespace Application.Features.UserImages.Profiles;
 
@@ -23,5 +24,6 @@ public class MappingProfiles : Profile
         CreateMap<UserImage, GetByIdUserImageResponse>().ReverseMap();
         CreateMap<UserImage, GetListUserImageListItemDto>().ReverseMap();
         CreateMap<IPaginate<UserImage>, GetListResponse<GetListUserImageListItemDto>>().ReverseMap();
+        CreateMap<UserImageUpdateRequest, UserImage>().ReverseMap();
     }
 }

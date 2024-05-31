@@ -8,19 +8,22 @@ public class CreatedUserResponse : IResponse
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Email { get; set; }
+    public string ImageUrl { get; set; }
 
     public CreatedUserResponse()
     {
         FirstName = string.Empty;
         LastName = string.Empty;
         Email = string.Empty;
+        ImageUrl = string.Empty;
     }
 
-    public CreatedUserResponse(Guid id, string firstName, string lastName, string email)
+    public CreatedUserResponse(Guid id, string firstName, string lastName, string email, string imageUrl)
     {
         Id = id;
         FirstName = firstName;
         LastName = lastName;
         Email = email;
+        ImageUrl = imageUrl;
     }
 }

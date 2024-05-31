@@ -1,10 +1,16 @@
-using NArchitecture.Core.Persistence.Paging;
+using Application.Features.UserImages.Commands.Delete;
 using Domain.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Query;
+using NArchitecture.Core.Persistence.Paging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Application.Services.UserImages;
-
 public interface IUserImageService
 {
     Task<UserImage?> GetAsync(
@@ -24,7 +30,7 @@ public interface IUserImageService
         bool enableTracking = true,
         CancellationToken cancellationToken = default
     );
-    Task<UserImage> AddAsync(UserImage userImage);
-    Task<UserImage> UpdateAsync(UserImage userImage);
-    Task<UserImage> DeleteAsync(UserImage userImage, bool permanent = false);
+    Task<UserImage> AddAsync(IFormFile file, UserImageRequest request);
+    Task<UserImage> UpdateAsync(IFormFile file, UserImageUpdateRequest request);
+    Task<DeletedUserImageResponse> DeleteAsync(int id);
 }

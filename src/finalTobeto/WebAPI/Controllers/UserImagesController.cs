@@ -1,38 +1,44 @@
-using Application.Features.UserImages.Commands.Create;
-using Application.Features.UserImages.Commands.Delete;
-using Application.Features.UserImages.Commands.Update;
 using Application.Features.UserImages.Queries.GetById;
 using Application.Features.UserImages.Queries.GetList;
+using Application.Services.UserImages;
+using Microsoft.AspNetCore.Mvc;
 using NArchitecture.Core.Application.Requests;
 using NArchitecture.Core.Application.Responses;
-using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
 public class UserImagesController : BaseController
-{
-    [HttpPost]
-    public async Task<IActionResult> Add([FromBody] CreateUserImageCommand createUserImageCommand)
-    {
-        CreatedUserImageResponse response = await Mediator.Send(createUserImageCommand);
 
-        return Created(uri: "", response);
+
+{
+
+    private readonly IUserImageService _userImageService;
+
+    public UserImagesController(IUserImageService userImageService)
+    {
+        _userImageService = userImageService;
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Add(IFormFile file, [FromForm] UserImageRequest request)
+    {
+        var result = await _userImageService.AddAsync(file, request);
+        return Ok(result);
     }
 
     [HttpPut]
-    public async Task<IActionResult> Update([FromBody] UpdateUserImageCommand updateUserImageCommand)
+    public async Task<IActionResult> Update(IFormFile file, [FromForm] UserImageUpdateRequest updateRequest)
     {
-        UpdatedUserImageResponse response = await Mediator.Send(updateUserImageCommand);
-
-        return Ok(response);
+        var result = await _userImageService.UpdateAsync(file, updateRequest);
+        return Ok(result);
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete([FromRoute] int id)
+    public async Task<IActionResult> Delete(int id)
     {
-        DeletedUserImageResponse response = await Mediator.Send(new DeleteUserImageCommand { Id = id });
+        var response = await _userImageService.DeleteAsync(id);
 
         return Ok(response);
     }

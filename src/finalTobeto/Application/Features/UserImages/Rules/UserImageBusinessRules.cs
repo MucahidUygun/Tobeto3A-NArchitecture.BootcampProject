@@ -1,12 +1,16 @@
 using Application.Features.UserImages.Constants;
 using Application.Services.Repositories;
+using Domain.Entities;
 using NArchitecture.Core.Application.Rules;
 using NArchitecture.Core.CrossCuttingConcerns.Exception.Types;
 using NArchitecture.Core.Localization.Abstraction;
-using Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Application.Features.UserImages.Rules;
-
 public class UserImageBusinessRules : BaseBusinessRules
 {
     private readonly IUserImageRepository _userImageRepository;
@@ -33,7 +37,7 @@ public class UserImageBusinessRules : BaseBusinessRules
     public async Task UserImageIdShouldExistWhenSelected(int id, CancellationToken cancellationToken)
     {
         UserImage? userImage = await _userImageRepository.GetAsync(
-            predicate: ui => ui.Id == id,
+            predicate: ii => ii.Id == id,
             enableTracking: false,
             cancellationToken: cancellationToken
         );

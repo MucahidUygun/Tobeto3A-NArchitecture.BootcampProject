@@ -7,6 +7,7 @@ using AutoMapper;
 using NArchitecture.Core.Application.Responses;
 using Domain.Entities;
 using NArchitecture.Core.Persistence.Paging;
+using Application.Services.BootcampImages;
 
 namespace Application.Features.BootcampImages.Profiles;
 
@@ -23,5 +24,6 @@ public class MappingProfiles : Profile
         CreateMap<BootcampImage, GetByIdBootcampImageResponse>().ReverseMap();
         CreateMap<BootcampImage, GetListBootcampImageListItemDto>().ReverseMap();
         CreateMap<IPaginate<BootcampImage>, GetListResponse<GetListBootcampImageListItemDto>>().ReverseMap();
+        CreateMap<BootcampImageUpdateRequest, BootcampImage>().ReverseMap();
     }
 }

@@ -1,21 +1,37 @@
+using Application.Features.UserImages.Commands.Delete;
 using Application.Features.UserImages.Rules;
+using Application.Services.ImageService;
 using Application.Services.Repositories;
-using NArchitecture.Core.Persistence.Paging;
+using AutoMapper;
 using Domain.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Query;
+using NArchitecture.Core.Application.Pipelines.Caching;
+using NArchitecture.Core.Persistence.Paging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Application.Services.UserImages;
-
-public class UserImageManager : IUserImageService
+public class UserImageManager : IUserImageService, ICacheRemoverRequest
 {
     private readonly IUserImageRepository _userImageRepository;
     private readonly UserImageBusinessRules _userImageBusinessRules;
-
-    public UserImageManager(IUserImageRepository userImageRepository, UserImageBusinessRules userImageBusinessRules)
+    private readonly ImageServiceBase _imageService;
+    private readonly IMapper _mapper;
+    public bool BypassCache { get; }
+    public string? CacheKey { get; }
+    public string[]? CacheGroupKey => ["GetUserImages"];
+    public UserImageManager(IUserImageRepository userImageRepository, UserImageBusinessRules userImageBusinessRules,
+        ImageServiceBase imageServiceBase, IMapper mapper)
     {
         _userImageRepository = userImageRepository;
         _userImageBusinessRules = userImageBusinessRules;
+        _imageService = imageServiceBase;
+        _mapper = mapper;
     }
 
     public async Task<UserImage?> GetAsync(
@@ -54,24 +70,31 @@ public class UserImageManager : IUserImageService
         return userImageList;
     }
 
-    public async Task<UserImage> AddAsync(UserImage userImage)
+    public async Task<UserImage> AddAsync(IFormFile file, UserImageRequest request)
     {
-        UserImage addedUserImage = await _userImageRepository.AddAsync(userImage);
+        UserImage userImage = new UserImage() { UserId = request.UserId };
+        userImage.ImagePath = await _imageService.UploadAsync(file);
+        return await _userImageRepository.AddAsync(userImage);
 
-        return addedUserImage;
     }
 
-    public async Task<UserImage> UpdateAsync(UserImage userImage)
+    public async Task<UserImage> UpdateAsync(IFormFile file, UserImageUpdateRequest request)
     {
-        UserImage updatedUserImage = await _userImageRepository.UpdateAsync(userImage);
-
-        return updatedUserImage;
+        UserImage userImage = await _userImageRepository.GetAsync(x => x.Id == request.Id);
+        userImage = _mapper.Map(request, userImage);
+        userImage.ImagePath = await _imageService.UpdateAsync(file, userImage.ImagePath);
+        await _userImageRepository.UpdateAsync(userImage);
+        return userImage;
     }
 
-    public async Task<UserImage> DeleteAsync(UserImage userImage, bool permanent = false)
+    public async Task<DeletedUserImageResponse> DeleteAsync(int id)
     {
-        UserImage deletedUserImage = await _userImageRepository.DeleteAsync(userImage);
+        UserImage userImage = await _userImageRepository.GetAsync(x => x.Id == id);
+        await _imageService.DeleteAsync(userImage.ImagePath);
+        await _userImageRepository.DeleteAsync(userImage, true);
 
-        return deletedUserImage;
+        DeletedUserImageResponse response = _mapper.Map<DeletedUserImageResponse>(userImage);
+        return response;
+
     }
 }

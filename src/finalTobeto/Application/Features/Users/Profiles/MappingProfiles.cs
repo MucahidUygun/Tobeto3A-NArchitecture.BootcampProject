@@ -23,8 +23,12 @@ public class MappingProfiles : Profile
         CreateMap<User, UpdatedUserFromAuthResponse>().ReverseMap();
         CreateMap<User, DeleteUserCommand>().ReverseMap();
         CreateMap<User, DeletedUserResponse>().ReverseMap();
-        CreateMap<User, GetByIdUserResponse>().ReverseMap();
-        CreateMap<User, GetListUserListItemDto>().ReverseMap();
+        CreateMap<User, GetByIdUserResponse>().
+            ForMember(destinationMember: x => x.UserImagePath, memberOptions: opt => opt.MapFrom(x => x.UserImages.FirstOrDefault().ImagePath))
+        .ForMember(destinationMember: x => x.UserImageId, memberOptions: opt => opt.MapFrom(x => x.UserImages.FirstOrDefault().Id));
+        CreateMap<User, GetListUserListItemDto>().
+            ForMember(destinationMember: x => x.UserImagePath, memberOptions: opt => opt.MapFrom(x => x.UserImages.FirstOrDefault().ImagePath))
+        .ForMember(destinationMember: x => x.UserImageId, memberOptions: opt => opt.MapFrom(x => x.UserImages.FirstOrDefault().Id));
         CreateMap<IPaginate<User>, GetListResponse<GetListUserListItemDto>>().ReverseMap();
     }
 }
