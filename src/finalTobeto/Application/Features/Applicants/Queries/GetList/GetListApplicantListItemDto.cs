@@ -12,4 +12,5 @@ public class GetListApplicantListItemDto : IDto
     public string NationalIdentity { get; set; }
     public string Email { get; set; }
     public string About { get; set; }
+    public string ImagePath { get; set; }
 }

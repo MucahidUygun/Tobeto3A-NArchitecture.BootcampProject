@@ -33,11 +33,18 @@ public class GetByIdApplicantQuery : IRequest<GetByIdApplicantResponse>, ISecure
         {
             Applicant? applicant = await _applicantRepository.GetAsync(
                 predicate: a => a.Id == request.Id, 
-                include: x=>x.Include(x=>x.UserImages),
-                cancellationToken: cancellationToken);
+                cancellationToken: cancellationToken,
+                include: x => x.Include(p => p.UserImages)
+                );
             await _applicantBusinessRules.ApplicantShouldExistWhenSelected(applicant);
 
             GetByIdApplicantResponse response = _mapper.Map<GetByIdApplicantResponse>(applicant);
+
+            foreach (var item in applicant.UserImages)
+            {
+                response.ImagePath = item.ImagePath;
+            }
+
             return response;
         }
     }
