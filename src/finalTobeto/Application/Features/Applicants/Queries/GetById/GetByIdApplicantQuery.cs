@@ -6,6 +6,7 @@ using Domain.Entities;
 using NArchitecture.Core.Application.Pipelines.Authorization;
 using MediatR;
 using static Application.Features.Applicants.Constants.ApplicantsOperationClaims;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Applicants.Queries.GetById;
 
@@ -30,7 +31,10 @@ public class GetByIdApplicantQuery : IRequest<GetByIdApplicantResponse>, ISecure
 
         public async Task<GetByIdApplicantResponse> Handle(GetByIdApplicantQuery request, CancellationToken cancellationToken)
         {
-            Applicant? applicant = await _applicantRepository.GetAsync(predicate: a => a.Id == request.Id, cancellationToken: cancellationToken);
+            Applicant? applicant = await _applicantRepository.GetAsync(
+                predicate: a => a.Id == request.Id, 
+                include: x=>x.Include(x=>x.UserImages),
+                cancellationToken: cancellationToken);
             await _applicantBusinessRules.ApplicantShouldExistWhenSelected(applicant);
 
             GetByIdApplicantResponse response = _mapper.Map<GetByIdApplicantResponse>(applicant);

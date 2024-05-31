@@ -15,6 +15,7 @@ using Application.Features.BootcampImages.Constants;
 using Application.Features.BootcampStates.Constants;
 using Application.Features.Employees.Constants;
 using Application.Features.Instructors.Constants;
+using Application.Features.UserImages.Constants;
 
 namespace Persistence.EntityConfigurations;
 
@@ -228,6 +229,20 @@ public class OperationClaimConfiguration : IEntityTypeConfiguration<OperationCla
                 new() { Id = ++lastId, Name = InstructorsOperationClaims.Create },
                 new() { Id = ++lastId, Name = InstructorsOperationClaims.Update },
                 new() { Id = ++lastId, Name = InstructorsOperationClaims.Delete },
+            ]
+        );
+        #endregion
+        
+        
+        #region UserImages
+        featureOperationClaims.AddRange(
+            [
+                new() { Id = ++lastId, Name = UserImagesOperationClaims.Admin },
+                new() { Id = ++lastId, Name = UserImagesOperationClaims.Read },
+                new() { Id = ++lastId, Name = UserImagesOperationClaims.Write },
+                new() { Id = ++lastId, Name = UserImagesOperationClaims.Create },
+                new() { Id = ++lastId, Name = UserImagesOperationClaims.Update },
+                new() { Id = ++lastId, Name = UserImagesOperationClaims.Delete },
             ]
         );
         #endregion

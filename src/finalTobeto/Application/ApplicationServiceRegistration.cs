@@ -28,6 +28,7 @@ using Application.Services.BootcampImages;
 using Application.Services.BootcampStates;
 using Application.Services.Employees;
 using Application.Services.Instructors;
+using Application.Services.UserImages;
 
 namespace Application;
 
@@ -77,6 +78,7 @@ public static class ApplicationServiceRegistration
         services.AddScoped<IBootcampStateService, BootcampStateManager>();
         services.AddScoped<IEmployeeService, EmployeeManager>();
         services.AddScoped<IInstructorService, InstructorManager>();
+        services.AddScoped<IUserImageService, UserImageManager>();
         return services;
     }
 
